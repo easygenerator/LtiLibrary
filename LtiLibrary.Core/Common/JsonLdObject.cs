@@ -10,9 +10,10 @@ namespace LtiLibrary.Core.Common
     [JsonConverter(typeof(JsonLdObjectConverter))]
     public class JsonLdObject : IJsonLdObject
     {
+        private readonly Dictionary<string, string> _terms;
         public JsonLdObject()
         {
-            Terms = new Dictionary<string, string>();
+            _terms = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace LtiLibrary.Core.Common
         /// document to express specific identifiers in a compact manner.
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, string> Terms { get; }
+        public IDictionary<string, string> Terms { get { return _terms; } }
 
         /// <summary>
         /// JSON-LD context created by JsonLdObjectConverter when serialized,

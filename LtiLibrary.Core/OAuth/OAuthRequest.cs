@@ -8,9 +8,10 @@ namespace LtiLibrary.Core.OAuth
 {
     public class OAuthRequest : IOAuthRequest
     {
+        private readonly NameValueCollection _parameters;
         public OAuthRequest()
         {
-            Parameters = new NameValueCollection();
+            _parameters = new NameValueCollection();
         }
 
         /// <summary>
@@ -20,11 +21,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.BodyHashParameter];
+                return _parameters[OAuthConstants.BodyHashParameter];
             }
             set
             {
-                Parameters[OAuthConstants.BodyHashParameter] = value;
+                _parameters[OAuthConstants.BodyHashParameter] = value;
             }
         }
 
@@ -32,11 +33,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.CallbackParameter];
+                return _parameters[OAuthConstants.CallbackParameter];
             }
             set
             {
-                Parameters[OAuthConstants.CallbackParameter] = value;
+                _parameters[OAuthConstants.CallbackParameter] = value;
             }
         }
 
@@ -47,11 +48,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.ConsumerKeyParameter];
+                return _parameters[OAuthConstants.ConsumerKeyParameter];
             }
             set
             {
-                Parameters[OAuthConstants.ConsumerKeyParameter] = value;
+                _parameters[OAuthConstants.ConsumerKeyParameter] = value;
             }
         }
 
@@ -63,11 +64,11 @@ namespace LtiLibrary.Core.OAuth
             get
             {
                 var customParameters = new UrlEncodingParser("");
-                foreach (var key in Parameters.AllKeys)
+                foreach (var key in _parameters.AllKeys)
                 {
                     if (key.StartsWith("custom_") || key.StartsWith("_ext"))
                     {
-                        customParameters.Add(key, Parameters[key]);
+                        customParameters.Add(key, _parameters[key]);
                     }
                 }
 
@@ -80,7 +81,7 @@ namespace LtiLibrary.Core.OAuth
                 {
                     if (key.StartsWith("custom_") || key.StartsWith("_ext"))
                     {
-                        Parameters[key] = customParameters[key];
+                        _parameters[key] = customParameters[key];
                     }
                 }
             }
@@ -98,11 +99,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.NonceParameter];
+                return _parameters[OAuthConstants.NonceParameter];
             }
             set
             {
-                Parameters[OAuthConstants.NonceParameter] = value;
+                _parameters[OAuthConstants.NonceParameter] = value;
             }
         }
 
@@ -111,7 +112,7 @@ namespace LtiLibrary.Core.OAuth
         /// </summary>
         [NotMapped]
         [JsonIgnore]
-        public NameValueCollection Parameters { get; }
+        public NameValueCollection Parameters { get { return _parameters; } }
 
         /// <summary>
         /// OAuth signature
@@ -121,11 +122,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.SignatureParameter];
+                return _parameters[OAuthConstants.SignatureParameter];
             }
             set
             {
-                Parameters[OAuthConstants.SignatureParameter] = value;
+                _parameters[OAuthConstants.SignatureParameter] = value;
             }
         }
 
@@ -136,11 +137,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.SignatureMethodParameter];
+                return _parameters[OAuthConstants.SignatureMethodParameter];
             }
             set
             {
-                Parameters[OAuthConstants.SignatureMethodParameter] = value;
+                _parameters[OAuthConstants.SignatureMethodParameter] = value;
             }
         }
 
@@ -151,11 +152,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Convert.ToInt64(Parameters[OAuthConstants.TimestampParameter]);
+                return Convert.ToInt64(_parameters[OAuthConstants.TimestampParameter]);
             }
             set
             {
-                Parameters[OAuthConstants.TimestampParameter] = Convert.ToString(value);
+                _parameters[OAuthConstants.TimestampParameter] = Convert.ToString(value);
             }
         }
 
@@ -171,7 +172,7 @@ namespace LtiLibrary.Core.OAuth
             }
             set
             {
-                Timestamp = Convert.ToInt64((value - OAuthConstants.Epoch).TotalSeconds);                
+                Timestamp = Convert.ToInt64((value - OAuthConstants.Epoch).TotalSeconds);
             }
         }
 
@@ -188,11 +189,11 @@ namespace LtiLibrary.Core.OAuth
         {
             get
             {
-                return Parameters[OAuthConstants.VersionParameter];
+                return _parameters[OAuthConstants.VersionParameter];
             }
             set
             {
-                Parameters[OAuthConstants.VersionParameter] = value;
+                _parameters[OAuthConstants.VersionParameter] = value;
             }
         }
 
@@ -204,7 +205,7 @@ namespace LtiLibrary.Core.OAuth
         /// <remarks>This is typically used by Tool Providers to verify the incoming request signature.</remarks>
         public string GenerateSignature(string consumerSecret)
         {
-            var parameters = new NameValueCollection(Parameters);
+            var parameters = new NameValueCollection(_parameters);
             return GenerateSignature(parameters, consumerSecret);
         }
 

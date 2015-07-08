@@ -15,10 +15,18 @@ namespace LtiLibrary.Core.Common
     public class JsonLdObjectConverter : JsonConverter
     {
         private static readonly Type JsonLdObjectType = typeof(IJsonLdObject);
-        private static readonly Type JsonLdObjectArrayType = typeof (IEnumerable<IJsonLdObject>);
+        private static readonly Type JsonLdObjectArrayType = typeof(IEnumerable<IJsonLdObject>);
 
-        public override bool CanRead => false;
-        public override bool CanWrite => true;
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override bool CanWrite
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// Writes the JSON representation of the object.
@@ -33,7 +41,7 @@ namespace LtiLibrary.Core.Common
             Uri externalContextId = null;
             if (JsonLdObjectType.IsInstanceOfType(value))
             {
-                var obj = (IJsonLdObject) value;
+                var obj = (IJsonLdObject)value;
                 externalContextId = GetExternalContextId(obj);
             }
 
@@ -41,7 +49,7 @@ namespace LtiLibrary.Core.Common
             IDictionary<string, string> terms = null;
             if (JsonLdObjectType.IsInstanceOfType(value))
             {
-                var obj = (IJsonLdObject) value;
+                var obj = (IJsonLdObject)value;
                 terms = GetTerms(obj);
             }
 
@@ -134,7 +142,7 @@ namespace LtiLibrary.Core.Common
         private static IDictionary<string, string> GetTerms(IJsonLdObject obj)
         {
             var terms = new Dictionary<string, string>();
-            if (obj?.Terms == null) return terms;
+            if (obj == null || obj.Terms == null) return terms;
 
             foreach (var key in obj.Terms.Keys)
             {
@@ -181,7 +189,7 @@ namespace LtiLibrary.Core.Common
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof (JsonLdObject);
+            return objectType == typeof(JsonLdObject);
         }
     }
 }
